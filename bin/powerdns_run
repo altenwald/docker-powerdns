@@ -11,7 +11,7 @@ launch=gpgsql
 # gpgsql parameters
 gpgsql-host=$PDNS_PORT_5432_TCP_ADDR
 gpgsql-port=$PDNS_PORT_5432_TCP_PORT
-gpgsql-dbname=$PDNS_ENV_POSTGRES_USER
+gpgsql-dbname=$PDNS_ENV_POSTGRES_DB
 gpgsql-user=$PDNS_ENV_POSTGRES_USER
 gpgsql-password=$PDNS_ENV_POSTGRES_PASSWORD
 gpgsql-dnssec=yes
@@ -29,7 +29,7 @@ launch=gpgsql
 # gpgsql parameters
 gpgsql-host=$PDNS_PORT_5432_TCP_ADDR
 gpgsql-port=$PDNS_PORT_5432_TCP_PORT
-gpgsql-dbname=$PDNS_ENV_POSTGRES_USER
+gpgsql-dbname=$PDNS_ENV_POSTGRES_DB
 gpgsql-user=$PDNS_ENV_POSTGRES_USER
 gpgsql-password=$PDNS_ENV_POSTGRES_PASSWORD
 gpgsql-dnssec=yes
@@ -37,8 +37,14 @@ EOF
 
 
 # Initialize Database Schema
-export PGPASSWORD=$PDNS_ENV_POSTGRES_PASSWORD
-psql -h $PDNS_PORT_5432_TCP_ADDR -p $PDNS_PORT_5432_TCP_PORT -d $PDNS_ENV_POSTGRES_USER -U $PDNS_ENV_POSTGRES_USER -f /usr/share/doc/pdns-backend-pgsql/schema.pgsql.sql
+if [ ! -z "$PDNS_ENV_INIT_SCHEMA" ] || [ "$PDNS_ENV_INIT_SCHEMA" == "1" ]; then
+  export PGPASSWORD=$PDNS_ENV_POSTGRES_PASSWORD
+  psql -h $PDNS_PORT_5432_TCP_ADDR \
+       -p $PDNS_PORT_5432_TCP_PORT \
+       -d $PDNS_ENV_POSTGRES_DB \
+       -U $PDNS_ENV_POSTGRES_USER \
+       -f /usr/share/doc/pdns-backend-pgsql/schema.pgsql.sql
+fi
 
 # Start PowerDNS
 # same as /etc/init.d/pdns monitor

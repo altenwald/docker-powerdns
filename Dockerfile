@@ -1,7 +1,6 @@
-# Leaner build then Ubunutu
-FROM debian:jessie
+FROM debian:stretch
 
-MAINTAINER Kevin Johnson <kevinejohn@gmail.com>
+MAINTAINER Manuel Rubio <manuel@altenwald.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 
